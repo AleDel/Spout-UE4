@@ -1,0 +1,18 @@
+{
+	"FileVersion": 3,
+	"FriendlyName": "Spout Plugin",
+	"Version": 1,
+	"VersionName": "0.1",
+	"CreatedBy": "ale",
+	"CreatedByURL": "",
+	"Category": "Spout",
+	"Description": "Spout Sender",
+	"EnabledByDefault": false,
+	"Modules": [
+		{
+			"Name": "SpoutPlugin",
+			"Type": "Developer",
+			"LoadingPhase": "Default"
+		}
+	]
+}
