@@ -19,6 +19,8 @@ void FSpoutModule::ShutdownModule()
 	UE_LOG(SpoutLog, Warning, TEXT("Modulo Spout Descargado"));
 }
 
-#undef LOCTEXT_NAMESPACE
+
 	
-IMPLEMENT_MODULE(FSpoutModule, Kinect)
+IMPLEMENT_MODULE(FSpoutModule, SpoutPlugin)
+
+#undef LOCTEXT_NAMESPACE

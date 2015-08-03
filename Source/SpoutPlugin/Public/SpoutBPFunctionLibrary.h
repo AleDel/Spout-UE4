@@ -11,31 +11,92 @@
 
 #include "SpoutBPFunctionLibrary.generated.h"
 
+USTRUCT()
+struct FSenderStruct
+{
+	GENERATED_USTRUCT_BODY()
 
-UCLASS(ClassGroup = Kinect, Blueprintable)
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		FName sName;
+
+		//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		HANDLE sHandle;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		int32 w;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		int32 h;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		int32 SenderID;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		UTexture2D* TextureColor;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		UMaterialInstanceDynamic* MaterialInstanceColor;
+
+		// Pointer to our Texture's resource
+		FTexture2DResource* Texture2DResource;
+
+		// Regions we need to update
+		FUpdateTextureRegion2D* UpdateRegions;
+
+		//Sender
+		ID3D11Texture2D *activeTextures;
+
+	void SetName(FName NewsName)
+	{
+		sName = NewsName;
+	}
+	void SetSenderID(int32 NewSenderID)
+	{
+		SenderID = NewSenderID;
+	}
+	void SetHandle(HANDLE NewsHandle)
+	{
+		sHandle = NewsHandle;
+	}
+	void SetW(int32 NewW)
+	{
+		w = NewW;
+	}
+	void SetH(int32 NewH)
+	{
+		h = NewH;
+	}
+
+	FSenderStruct(){
+
+	}
+
+};
+
+UCLASS(ClassGroup = Spout, Blueprintable)
 class USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
 public:
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kinect")
+	//TArray<FSenderStruct> FSenders;
 
-	UFUNCTION(BlueprintCallable, Category = "Spout")
+	//UFUNCTION(BlueprintCallable, Category = "Spout")
 	static bool CreateSender(FName SenderName, UTextureRenderTarget2D* RenderTexture, int32 texFormatIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static bool UpdateSender(FName SenderName, UTextureRenderTarget2D* RenderTexture);
+		static bool SpoutSender(FName SenderName, UTextureRenderTarget2D* RenderTexture);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static void CloseSender(FName SenderName);
 
-	/*UFUNCTION(BlueprintCallable, Category = "Spout")
-		static UMaterialInstanceDynamic* GetMaterialRGB();*/
-
 	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static bool Receiver(UMaterialInterface* Base_Material, int32& numSenders, UMaterialInstanceDynamic*& mat);
-	//static void Receiver(UMaterialInterface* Base_Material, int32& numSenders, UMaterialInstanceDynamic*& mat);
+		static bool SpoutReceiver(const FName SenderName, UMaterialInterface* Base_Material, UMaterialInstanceDynamic*& mat);
 	
-private:
+	UFUNCTION(BlueprintCallable, Category = "Spout")
+		static bool SpoutInfo(TArray<FSenderStruct>& Senders);
 	
-
+	UFUNCTION(BlueprintCallable, Category = "Spout")
+		static bool SpoutInfoFrom(FName SenderName, FSenderStruct& SenderStruct);
 };
