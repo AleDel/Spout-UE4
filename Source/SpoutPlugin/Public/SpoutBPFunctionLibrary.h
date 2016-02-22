@@ -73,6 +73,13 @@ struct FSenderStruct
 
 };
 
+UENUM(BlueprintType)
+enum class ESpoutSendTextureFrom
+{
+	GameViewport,
+	TextureRenderTarget2D
+};
+
 UCLASS(ClassGroup = Spout, Blueprintable)
 class USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
 {
@@ -83,10 +90,10 @@ public:
 	//TArray<FSenderStruct> FSenders;
 
 	//UFUNCTION(BlueprintCallable, Category = "Spout")
-	static bool CreateSender(FName SenderName, UTextureRenderTarget2D* RenderTexture, int32 texFormatIndex);
+	static bool CreateSender(FName SenderName, ID3D11Texture2D* baseTexture, int32 texFormatIndex);
 
-	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static bool SpoutSender(FName SenderName, UTextureRenderTarget2D* RenderTexture);
+	UFUNCTION(BlueprintCallable, Category = "Spout", meta = (AdvancedDisplay = "2"))
+		static bool SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* RenderTexture);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static void CloseSender(FName SenderName);

@@ -179,24 +179,17 @@ bool USpoutBPFunctionLibrary::SpoutInfoFrom(FName SenderName, FSenderStruct& Sen
 }
 
 
-bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, UTextureRenderTarget2D* RenderTexture, int32 texFormatIndex)
+bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, ID3D11Texture2D* baseTexture, int32 texFormatIndex)
 {
-	
-	if (RenderTexture == nullptr)
-	{
-		UE_LOG(SpoutLog, Warning, TEXT("RenderTexture pointer is null"));
-		return false;
-	}
-	
 	if (sender == nullptr)
 	{
 		initSpout();
-		//return
+
 	};
+
 	if (g_D3D11Device == nullptr || g_pImmediateContext == NULL){
+		UE_LOG(SpoutLog, Warning, TEXT("Getting Device..."));
 		InitDevice();
-		const FString tmp = SenderName.GetPlainNameString();
-		UE_LOG(SpoutLog, Warning, TEXT("ggggggggggg : %s"), *tmp);
 	}
 
 	HANDLE sharedSendingHandle = NULL;
@@ -204,12 +197,10 @@ bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, UTextureRenderTarge
 	bool updateResult = false;
 	bool senderResult = false;
 	
-	ID3D11Texture2D* baseTexture = (ID3D11Texture2D*)RenderTexture->Resource->TextureRHI->GetTexture2D()->GetNativeResource();
-
 	D3D11_TEXTURE2D_DESC desc;
 	baseTexture->GetDesc(&desc);
 	ID3D11Texture2D * sendingTexture;
-	UE_LOG(SpoutLog, Warning, TEXT("textura : ancho_%i, alto_%i"), desc.Width, desc.Height);
+	UE_LOG(SpoutLog, Warning, TEXT("ID3D11Texture2D Info : ancho_%i, alto_%i"), desc.Width, desc.Height);
 
 	DXGI_FORMAT texFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;//DXGI_FORMAT_B8G8R8A8_UNORM;
 	switch (texFormatIndex)
@@ -231,7 +222,7 @@ bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, UTextureRenderTarge
 		break;
 	}
 
-	UE_LOG(SpoutLog, Warning, TEXT("baseTexture Format is %i"), int(desc.Format));
+	UE_LOG(SpoutLog, Warning, TEXT("ID3D11Texture2D Info : Format is %i"), int(desc.Format));
 
 	texResult = sdx->CreateSharedDX11Texture(g_D3D11Device, desc.Width, desc.Height, texFormat, &sendingTexture, sharedSendingHandle);
 	UE_LOG(SpoutLog, Warning, TEXT("Create shared Texture with SDX : %i"), texResult);
@@ -243,18 +234,19 @@ bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, UTextureRenderTarge
 	}
 
 	const auto tmp = SenderName.GetPlainNameString();
-	UE_LOG(SpoutLog, Warning, TEXT("create Sender: name --> %s"), *tmp);
+	UE_LOG(SpoutLog, Warning, TEXT("Created Sender: name --> %s"), *tmp);
 
 	//
 	senderResult = sender->CreateSender(SenderName.GetPlainANSIString(), desc.Width, desc.Height, sharedSendingHandle, texFormat);
-	UE_LOG(SpoutLog, Warning, TEXT("Create sender DX11 with sender name : %s (%i)"), *tmp, senderResult);
+	UE_LOG(SpoutLog, Warning, TEXT("Created sender DX11 with sender name : %s (%i)"), *tmp, senderResult);
 
 
 	g_pImmediateContext->CopyResource(sendingTexture, baseTexture);
 	g_pImmediateContext->Flush();
 
 	updateResult = sender->UpdateSender(SenderName.GetPlainANSIString(), desc.Width, desc.Height, sharedSendingHandle);
-
+	
+	UE_LOG(SpoutLog, Warning, TEXT("Adding Sender to Sender list"));
 	FSenderStruct* newFSenderStruc = new FSenderStruct();
 	newFSenderStruc->SetW(desc.Width);
 	newFSenderStruc->SetH(desc.Height);
@@ -271,8 +263,31 @@ bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, UTextureRenderTarge
 	
 }
 
-bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, UTextureRenderTarget2D* RenderTexture)
+bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* RenderTexture)
 {
+
+	ID3D11Texture2D* baseTexture = 0;
+
+	switch (sendTextureFrom)
+	{
+	case ESpoutSendTextureFrom::GameViewport:
+		baseTexture = (ID3D11Texture2D*)GEngine->GameViewport->Viewport->GetRenderTargetTexture()->GetNativeResource();
+		break;
+	case ESpoutSendTextureFrom::TextureRenderTarget2D:
+		if (RenderTexture == nullptr) {
+			UE_LOG(SpoutLog, Warning, TEXT("No TextureRenderTarget2D Selected!!"));
+			return false;
+		}
+		baseTexture = (ID3D11Texture2D*)RenderTexture->Resource->TextureRHI->GetTexture2D()->GetNativeResource();
+		break;
+	default:
+		break;
+	}
+
+	if (baseTexture == nullptr) {
+		UE_LOG(SpoutLog, Warning, TEXT("baseTexture is null"));
+		return false;
+	}
 
 	//Existe en mi lista ??
 	auto MyPredicate = [&](const FSenderStruct InItem) {return InItem.sName == SenderName; };
@@ -282,7 +297,7 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, UTextureRenderTarget
 	if (EncontradoSenderStruct == nullptr){
 
 		UE_LOG(SpoutLog, Warning, TEXT("no Sender, creando uno"));
-		CreateSender(SenderName, RenderTexture, 87);
+		CreateSender(SenderName, baseTexture, 87);
 		return false;
 	}
 	
@@ -301,12 +316,6 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, UTextureRenderTarget
 
 	if (targetTex == nullptr){
 		UE_LOG(SpoutLog, Warning, TEXT("targetTex is null"));
-		return false;
-	}
-
-	ID3D11Texture2D* baseTexture = (ID3D11Texture2D*)RenderTexture->Resource->TextureRHI->GetTexture2D()->GetNativeResource();
-	if (baseTexture == nullptr){
-		UE_LOG(SpoutLog, Warning, TEXT("baseTexture is null"));
 		return false;
 	}
 	
@@ -481,8 +490,10 @@ void USpoutBPFunctionLibrary::CloseSender(FName SenderName)
 	
 	if (g_D3D11Device){
 		UE_LOG(SpoutLog, Warning, TEXT("Release Context and Graphics Device D3D11"));
-		g_pImmediateContext->Release();
-		g_D3D11Device->Release();
+		g_pImmediateContext=0;
+		g_D3D11Device=0;
+		//g_pImmediateContext->Release();
+		//g_D3D11Device->Release();
 	}
 	UE_LOG(SpoutLog, Warning, TEXT("There are now %i senders remaining "), FSenders.Num());
 
