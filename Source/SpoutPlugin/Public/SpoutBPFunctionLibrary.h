@@ -86,20 +86,17 @@ class USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Kinect")
-	//TArray<FSenderStruct> FSenders;
 
-	//UFUNCTION(BlueprintCallable, Category = "Spout")
 	static bool CreateSender(FName SenderName, ID3D11Texture2D* baseTexture, int32 texFormatIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout", meta = (AdvancedDisplay = "2"))
-		static bool SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* RenderTexture);
+		static bool SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* textureRenderTarget2D);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static void CloseSender(FName SenderName);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static bool SpoutReceiver(const FName SenderName, UMaterialInterface* Base_Material, UMaterialInstanceDynamic*& mat);
+		static bool SpoutReceiver(const FName SenderName, UMaterialInstanceDynamic*& mat);
 	
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static bool SpoutInfo(TArray<FSenderStruct>& Senders);

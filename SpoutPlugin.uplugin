@@ -14,5 +14,6 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
-	]
+	],
+	"CanContainContent" : "true"
 }

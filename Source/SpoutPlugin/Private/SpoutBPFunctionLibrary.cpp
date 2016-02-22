@@ -115,7 +115,7 @@ void InitDevice()
 bool CheckSpoutSenderName(FName SenderName, FSenderStruct*& SenderStruct){
 	//Existe en realidad ??
 	if (!sender->FindSenderName(SenderName.GetPlainANSIString())){
-		UE_LOG(SpoutLog, Warning, TEXT("222222no encuentro ningun sender con el nombre %s"), *SenderName.GetPlainNameString());
+		UE_LOG(SpoutLog, Warning, TEXT("Not found any sender with the name %s"), *SenderName.GetPlainNameString());
 		return false;
 	}
 	unsigned int w;
@@ -263,7 +263,7 @@ bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, ID3D11Texture2D* ba
 	
 }
 
-bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* RenderTexture)
+bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* textureRenderTarget2D)
 {
 
 	ID3D11Texture2D* baseTexture = 0;
@@ -274,11 +274,11 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFro
 		baseTexture = (ID3D11Texture2D*)GEngine->GameViewport->Viewport->GetRenderTargetTexture()->GetNativeResource();
 		break;
 	case ESpoutSendTextureFrom::TextureRenderTarget2D:
-		if (RenderTexture == nullptr) {
+		if (textureRenderTarget2D == nullptr) {
 			UE_LOG(SpoutLog, Warning, TEXT("No TextureRenderTarget2D Selected!!"));
 			return false;
 		}
-		baseTexture = (ID3D11Texture2D*)RenderTexture->Resource->TextureRHI->GetTexture2D()->GetNativeResource();
+		baseTexture = (ID3D11Texture2D*)textureRenderTarget2D->Resource->TextureRHI->GetTexture2D()->GetNativeResource();
 		break;
 	default:
 		break;
@@ -295,7 +295,10 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFro
 
 	//if (!bIsInListSenders){
 	if (EncontradoSenderStruct == nullptr){
-
+		/*if (sender->FindSenderName(SenderName.GetPlainANSIString())) {
+			UE_LOG(SpoutLog, Warning, TEXT("Sender Name already in use, select another name"));
+			return false;
+		}*/
 		UE_LOG(SpoutLog, Warning, TEXT("no Sender, creando uno"));
 		CreateSender(SenderName, baseTexture, 87);
 		return false;
@@ -339,7 +342,7 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFro
 	return result;
 }
 
-bool USpoutBPFunctionLibrary::SpoutReceiver(const FName SenderName, UMaterialInterface* Base_Material, UMaterialInstanceDynamic*& mat)
+bool USpoutBPFunctionLibrary::SpoutReceiver(const FName SenderName, UMaterialInstanceDynamic*& mat)
 {
 	const FString SenderNameString = SenderName.GetPlainNameString();
 	int32 Width;
@@ -347,23 +350,25 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName SenderName, UMaterialInt
 
 	if (BaseMaterial == NULL)
 	{
-		BaseMaterial = Base_Material;
+		UMaterialInterface* mBase_Material = 0;
+		mBase_Material = LoadObject<UMaterial>(NULL, TEXT("/SpoutPlugin/Materials/SpoutMaterial.SpoutMaterial"), NULL, LOAD_None, NULL);
+		BaseMaterial = mBase_Material;
 	}
 	
 	if (sender == nullptr)
 	{ 
 		initSpout();
-		//return
 	};
+
 	if (g_D3D11Device == nullptr || g_pImmediateContext == NULL){
+		
 		InitDevice();
-		UE_LOG(SpoutLog, Warning, TEXT("ggggggggggg : %s"), *SenderNameString);
 	}
 
 	FSenderStruct* SenderStruct;
 
 	if (!CheckSpoutSenderName(SenderName, SenderStruct)){
-		UE_LOG(SpoutLog, Warning, TEXT("11111 no encuentro ningun sender con el nombre %s"), *SenderNameString);
+		UE_LOG(SpoutLog, Warning, TEXT("try to rename it, or resend %s"), *SenderNameString);
 		return false;
 	}
 	
