@@ -32,6 +32,6 @@ Pictured above corresponds to the scene "simpleSpout" is a good example if you w
 
 [ExampleSpout.zip](http://aledel.github.io/Spout-UE4/exampleSpoutUE4/ExampleSpout.zip)
 
-![CaptureSpout2](http://aledel.github.io/Spout-UE4/Images/Spout1.jpg)
+![CaptureSpout2](http://aledel.github.io/Spout-UE4/images/spout2.jpg)
 This image corresponds to the "Spout" scene. It works much better. 
 
