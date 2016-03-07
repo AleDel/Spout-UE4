@@ -87,10 +87,10 @@ class USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
 
 public:
 
-	static bool CreateSender(FName SenderName, ID3D11Texture2D* baseTexture, int32 texFormatIndex);
+	static bool CreateSender(FName SenderName, ID3D11Texture2D* baseTexture);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout", meta = (AdvancedDisplay = "2"))
-		static bool SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* textureRenderTarget2D);
+		static bool SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* textureRenderTarget2D, float targetGamma = 2.2);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static void CloseSender(FName SenderName);

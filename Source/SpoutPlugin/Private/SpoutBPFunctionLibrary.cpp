@@ -179,7 +179,7 @@ bool USpoutBPFunctionLibrary::SpoutInfoFrom(FName SenderName, FSenderStruct& Sen
 }
 
 
-bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, ID3D11Texture2D* baseTexture, int32 texFormatIndex)
+bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, ID3D11Texture2D* baseTexture)
 {
 	if (sender == nullptr)
 	{
@@ -200,30 +200,16 @@ bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, ID3D11Texture2D* ba
 	D3D11_TEXTURE2D_DESC desc;
 	baseTexture->GetDesc(&desc);
 	ID3D11Texture2D * sendingTexture;
+
 	UE_LOG(SpoutLog, Warning, TEXT("ID3D11Texture2D Info : ancho_%i, alto_%i"), desc.Width, desc.Height);
-
-	DXGI_FORMAT texFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;//DXGI_FORMAT_B8G8R8A8_UNORM;
-	switch (texFormatIndex)
-	{
-	case 2:
-		texFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		break;
-	case 24:
-		texFormat = DXGI_FORMAT_R10G10B10A2_UNORM;
-		break;
-	case 28:
-		texFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-		break;
-	case 87:
-		texFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
-		break;
-	case 10:
-		texFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		break;
-	}
-
 	UE_LOG(SpoutLog, Warning, TEXT("ID3D11Texture2D Info : Format is %i"), int(desc.Format));
 
+	//use the pixel format from basetexture (the native texture textureRenderTarget2D)
+	DXGI_FORMAT texFormat = desc.Format;
+	if (desc.Format == DXGI_FORMAT_B8G8R8A8_TYPELESS) {
+		texFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+	}
+	
 	texResult = sdx->CreateSharedDX11Texture(g_D3D11Device, desc.Width, desc.Height, texFormat, &sendingTexture, sharedSendingHandle);
 	UE_LOG(SpoutLog, Warning, TEXT("Create shared Texture with SDX : %i"), texResult);
 
@@ -263,7 +249,7 @@ bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, ID3D11Texture2D* ba
 	
 }
 
-bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* textureRenderTarget2D)
+bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* textureRenderTarget2D, float targetGamma)
 {
 
 	ID3D11Texture2D* baseTexture = 0;
@@ -278,6 +264,7 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFro
 			UE_LOG(SpoutLog, Warning, TEXT("No TextureRenderTarget2D Selected!!"));
 			return false;
 		}
+		textureRenderTarget2D->TargetGamma = targetGamma;
 		baseTexture = (ID3D11Texture2D*)textureRenderTarget2D->Resource->TextureRHI->GetTexture2D()->GetNativeResource();
 		break;
 	default:
@@ -300,7 +287,7 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFro
 			return false;
 		}*/
 		UE_LOG(SpoutLog, Warning, TEXT("no Sender, creando uno"));
-		CreateSender(SenderName, baseTexture, 87);
+		CreateSender(SenderName, baseTexture);
 		return false;
 	}
 	
