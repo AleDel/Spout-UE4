@@ -52,7 +52,7 @@
 #include "SpoutSharedMemory.h"
 
 #define SPOUT_WAIT_TIMEOUT 100 // 100 msec wait for events
-#define MaxSenders 10 // Max for list of Sender names
+#define MaxSenders 20 // Max for list of Sender names
 #define SpoutMaxSenderNameLen 256
 
 // The texture information structure that is saved to shared memory
