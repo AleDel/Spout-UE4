@@ -187,6 +187,12 @@ bool USpoutBPFunctionLibrary::CreateSender(FName SenderName, ID3D11Texture2D* ba
 
 	};
 
+	//Existe en realidad ??
+	if (sender->FindSenderName(SenderName.GetPlainANSIString())) {
+		UE_LOG(SpoutLog, Warning, TEXT("Already exist a Sender with the name %s"), *SenderName.GetPlainNameString());
+		return false;
+	}
+
 	if (g_D3D11Device == nullptr || g_pImmediateContext == NULL){
 		UE_LOG(SpoutLog, Warning, TEXT("Getting Device..."));
 		InitDevice();
@@ -253,6 +259,9 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName SenderName, ESpoutSendTextureFro
 {
 
 	ID3D11Texture2D* baseTexture = 0;
+
+	//UTextureRenderTarget2D* OutputTexture = NewObject<UTextureRenderTarget2D>();
+	
 
 	switch (sendTextureFrom)
 	{
