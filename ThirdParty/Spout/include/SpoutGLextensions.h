@@ -21,7 +21,6 @@
 //			PROCESSING - Jspout JNI dll						 +		 -		 -		 +		 +		 +
 //			SpoutCam										 +		 -		 -		 +		 +		 +
 //			SpoutPanel										 +		 -		 -		 +		 +		 +
-//			SpoutTray										 -		 -		 +		 +		 +		 +
 //			Spout dll										 +		 +		 -		 +		 +		 +
 //			WinSpout										 +		 -		 -		 +		 +		 +
 //			OpenFrameWorks									 +		 -		 -		 +		 +		 +
@@ -32,7 +31,7 @@
 //
 /*
 
-		Copyright (c) 2014>, Lynn Jarvis. All rights reserved.
+		Copyright (c) 2014-2015, Lynn Jarvis. All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without modification, 
 		are permitted provided that the following conditions are met:
@@ -58,16 +57,16 @@
 #ifndef __spoutGLextensions__	// standard way as well
 #define __spoutGLextensions__
 
-#define GLEW_STATIC // to use glew32s.lib instead of glew32.lib
-
-// set this to use GLEW instead of dynamic load of extensions - used for SpoutCam and SpoutTray
+// set this to use GLEW instead of dynamic load of extensions
 // #define USE_GLEW	
+// set this to use glew32s.lib instead of glew32.lib
+// #define GLEW_STATIC
 
 // *** Load of FBO extensions conflicts with FFGL or Jitter, disable them here ***
 #define USE_FBO_EXTENSIONS // don't use for jitter
 
 // If load of PBO extensions conflicts with Jitter disable them here
-// #define USE_PBO_EXTENSIONS // don't use for openframeworks
+// #define USE_PBO_EXTENSIONS // don't use for openframeworks or jitter
 
 #include <windows.h>
 #include <stdio.h> // for debug print

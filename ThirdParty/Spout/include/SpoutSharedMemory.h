@@ -54,27 +54,30 @@ public:
 	~SpoutSharedMemory();
 
 
-	// Create a new memory segment, or attachs to an existing one
-	SpoutCreateResult	Create(const char* name, int size);
+	// Create a new memory segment, or attach to an existing one
+	SpoutCreateResult Create(const char* name, int size);
 
 	// Opens an existing one
-	bool	Open(const char* name);
-	void	Close();
+	bool Open(const char* name);
+	void Close();
 
 	// Returns the buffer
-	char*	Lock();
-	void	Unlock();
+	char* Lock();
+	void Unlock();
 
-	void	Debug();
+	void Debug();
+
 private:
-	char*	m_pBuffer;
-	HANDLE	m_hMap;
-	HANDLE	m_hMutex;
 
-	int		m_lockCount;
+	char*  m_pBuffer;
+	HANDLE m_hMap;
+	HANDLE m_hMutex;
+
+	int m_lockCount;
 
 	const char*	m_pName;
-	int			m_size;
+	int m_size;
+
 };
 
 #endif

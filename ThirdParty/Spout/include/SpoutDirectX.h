@@ -57,25 +57,56 @@ class SPOUT_DLLEXP spoutDirectX {
 		IDirect3D9Ex* CreateDX9object(); // Create a DirectX9 object
 		IDirect3DDevice9Ex* CreateDX9device(IDirect3D9Ex* pD3D, HWND hWnd);	// Create a DirectX9 device
 		bool CreateSharedDX9Texture(IDirect3DDevice9Ex* pDevice, unsigned int width, unsigned int height, D3DFORMAT format, LPDIRECT3DTEXTURE9 &dxTexture, HANDLE &dxShareHandle);
+		// LJ DEBUG : TODO
+		// bool ReadSharedDX9texture(IDirect3DDevice9Ex* pDevice, LPDIRECT3DTEXTURE9 &dxTexture, HANDLE &dxShareHandle, unsigned char *pixels, unsigned int width, unsigned int height);
 
 		// DX11
 		ID3D11Device* CreateDX11device(); // Create a DX11 device
 		bool CreateSharedDX11Texture(ID3D11Device* pDevice, unsigned int width, unsigned int height, DXGI_FORMAT format, ID3D11Texture2D** pSharedTexture, HANDLE &dxShareHandle);
 		bool OpenDX11shareHandle(ID3D11Device* pDevice, ID3D11Texture2D** ppSharedTexture, HANDLE dxShareHandle);
 		void CloseDX11();
-		bool DX11available(); // Verify that the operating system supports DirectX 11
 
 		// Output adapter selection
 		int GetNumAdapters(); // Get the number of graphics adapters in the system
 		bool GetAdapterName(int index, char *adaptername, int maxchars); // Get an adapter name
 		bool SetAdapter(int index); // Set required graphics adapter for output
 		int GetAdapter(); // Get the current adapter index
+		bool GetAdapterInfo(char *renderdescription, char *displaydescription, int maxchars);
+
+		// Registry read/write
+		// 20.11.15 - moved from interop class
+		bool ReadDwordFromRegistry(DWORD *pValue, const char *subkey, const char *valuename);
+		bool WriteDwordToRegistry(DWORD dwValue, const char *subkey, const char *valuename);
 
 		// Mutex locks for DirectX 9 shared texture access
 		bool CreateAccessMutex(const char *name, HANDLE &hAccessMutex);
 		void CloseAccessMutex(HANDLE &hAccessMutex);
 		bool CheckAccess(HANDLE hAccessMutex, ID3D11Texture2D* pSharedTexture = NULL);
 		void AllowAccess(HANDLE hAccessMutex, ID3D11Texture2D* pSharedTexture = NULL);
+
+		// LJ DEBUG
+		// Receiver access mutex - created by a receiver
+		//
+		// Sender :
+		//		o CheckReceiverAccess
+		//		o	write texture
+		//		o AllowReceiverAcess
+		//
+		//	Receiver :
+		//		o CheckSenderAccess  (CheckAccess)
+		//		o   read texture
+		//		o AllowSenderAccess  (AllowAccess)	
+		//
+		//	Common :
+		//		CreateAccessMutex
+		//		CloseAccessMutex
+		//		CreateReceiverAccessMutex
+		//		CloseRecieverAccessMutex
+		//
+		bool CreateReceiverAccessMutex(const char *name, HANDLE &hAccessMutex);
+		void CloseReceiverAccessMutex(HANDLE &hAccessMutex);
+		bool CheckReceiverAccess(HANDLE hAccessMutex);
+		void AllowReceiverAccess(HANDLE hAccessMutex);
 
 		// For debugging only - to toggle texture access locks disable/enable
 		bool bUseAccessLocks;
