@@ -11,6 +11,29 @@
 
 #include "SpoutBPFunctionLibrary.generated.h"
 
+UENUM(BlueprintType)
+enum class ESpoutType
+{
+	Sender,
+	Receiver
+};
+
+UENUM(BlueprintType)
+enum class ESpoutState
+{
+	ER,
+	EnoR,
+	noER,
+	noEnoR
+};
+
+UENUM(BlueprintType)
+enum class ESpoutSendTextureFrom
+{
+	GameViewport,
+	TextureRenderTarget2D
+};
+
 USTRUCT()
 struct FSenderStruct
 {
@@ -18,6 +41,12 @@ struct FSenderStruct
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
 		FName sName;
+		
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		bool bIsAlive;
+
+		//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
+		ESpoutType spoutType;
 
 		//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spout Struct")
 		HANDLE sHandle;
@@ -73,12 +102,6 @@ struct FSenderStruct
 
 };
 
-UENUM(BlueprintType)
-enum class ESpoutSendTextureFrom
-{
-	GameViewport,
-	TextureRenderTarget2D
-};
 
 UCLASS(ClassGroup = Spout, Blueprintable)
 class USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
@@ -87,20 +110,20 @@ class USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
 
 public:
 
-	static bool CreateSender(FName SenderName, ID3D11Texture2D* baseTexture);
+	static bool CreateRegisterSender(FName spoutName, ID3D11Texture2D* baseTexture);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout", meta = (AdvancedDisplay = "2"))
-		static bool SpoutSender(FName SenderName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* textureRenderTarget2D, float targetGamma = 2.2);
+		static bool SpoutSender(FName spoutName, ESpoutSendTextureFrom sendTextureFrom, UTextureRenderTarget2D* textureRenderTarget2D, float targetGamma = 2.2);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static void CloseSender(FName SenderName);
+		static void CloseSender(FName spoutName);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static bool SpoutReceiver(const FName SenderName, UMaterialInstanceDynamic*& mat);
+		static bool SpoutReceiver(const FName spoutName, UMaterialInstanceDynamic*& mat);
 	
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static bool SpoutInfo(TArray<FSenderStruct>& Senders);
 	
 	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static bool SpoutInfoFrom(FName SenderName, FSenderStruct& SenderStruct);
+		static bool SpoutInfoFrom(FName spoutName, FSenderStruct& SenderStruct);
 };
