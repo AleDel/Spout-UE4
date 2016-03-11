@@ -10,17 +10,11 @@ Put code in folder Plugins (for example "yourproject/Plugins/Spout-UE4")
 # Info
 
 the "spout sender" has two options: 
-  * "Game Viewport" that send the image of the viewport 
+  * "Game Viewport" that send the image of the viewport (no work in standalone game) 
   * or use a "TextureRenderTarget2D" in this case you should create along with a "SceneCaptureComponent2D"
 
 use "spout close" blueprint to close spouts in runtime
 
-you can change the names at runtime.
-
-I have had crashes if the "SenderName" of the "Spout Sender" has the same name as another "Spout Sender".
-
-![CaptureSpout1](http://aledel.github.io/KinectXbox360-UE4/Images/Spout1.jpg)
-Pictured above corresponds to the scene "simpleSpout" is a good example.
 
 # Install Example
 
@@ -33,6 +27,5 @@ Pictured above corresponds to the scene "simpleSpout" is a good example.
 [ExampleSpout.zip](http://aledel.github.io/Spout-UE4/exampleSpoutUE4/ExampleSpout.zip)
 
 ![CaptureSpout2](http://aledel.github.io/Spout-UE4/images/spout2.jpg)
-This image corresponds to the "Spout" scene. It works much better.
-and as a curiosity when I print screen. you can see what it took to complete the shared memory in that frame, the balls were really very fast
+This image corresponds to the "Spout" scene. 
 
