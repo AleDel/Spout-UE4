@@ -13,7 +13,7 @@ the "spout sender" has two options:
   * "Game Viewport" that send the image of the viewport (no work in standalone game) 
   * or use a "TextureRenderTarget2D" in this case you should create along with a "SceneCaptureComponent2D"
 
-use "spout close" blueprint to close spouts in runtime
+use "spout close" blueprint to close spouts
 
 
 # Install Example
