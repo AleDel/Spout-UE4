@@ -20,7 +20,7 @@ you can change the names at runtime.
 I have had crashes if the "SenderName" of the "Spout Sender" has the same name as another "Spout Sender".
 
 ![CaptureSpout1](http://aledel.github.io/KinectXbox360-UE4/Images/Spout1.jpg)
-Pictured above corresponds to the scene "simpleSpout" is a good example if you want to see the game crash, probably "Violations memory access" or "pure virtual function being called .." error. 
+Pictured above corresponds to the scene "simpleSpout" is a good example.
 
 # Install Example
 
