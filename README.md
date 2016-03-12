@@ -15,6 +15,8 @@ the "spout sender" has two options:
 
 use "spout close" blueprint to close spouts
 
+![CaptureSpout2](http://aledel.github.io/Spout-UE4/images/10senders.jpg)
+test sending 10 sender to Touchdesigner 1024x768 either one, the performance is good.
 
 # Install Example
 
