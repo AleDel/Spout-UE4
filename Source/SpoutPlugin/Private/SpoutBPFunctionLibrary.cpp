@@ -111,6 +111,27 @@ void GetDevice()
 	g_D3D11Device->GetImmediateContext(&g_pImmediateContext);
 }
 
+int32 USpoutBPFunctionLibrary::SetMaxSenders(int32 max){
+	if (sender == nullptr)
+	{
+		initSpout();
+
+	};
+
+	sender->SetMaxSenders(max);
+	return max;
+}
+
+void USpoutBPFunctionLibrary::GetMaxSenders(int32& max) {
+	if (sender == nullptr)
+	{
+		initSpout();
+
+	};
+
+	max = sender->GetMaxSenders();
+}
+
 
 bool GetSpoutRegistred(FName spoutName, FSenderStruct*& SenderStruct) {
 

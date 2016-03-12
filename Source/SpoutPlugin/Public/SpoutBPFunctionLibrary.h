@@ -126,4 +126,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static bool SpoutInfoFrom(FName spoutName, FSenderStruct& SenderStruct);
+
+	UFUNCTION(BlueprintCallable, Category = "Spout")
+		static int32 SetMaxSenders(int32 max);
+	
+	UFUNCTION(BlueprintCallable, Category = "Spout")
+		static void GetMaxSenders(int32& max);
 };
