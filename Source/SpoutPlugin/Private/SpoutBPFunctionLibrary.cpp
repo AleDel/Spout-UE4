@@ -93,6 +93,19 @@ void ResetTexture(UTexture2D*& Texture, UMaterialInstanceDynamic*& MaterialInsta
 
 }
 
+UTextureRenderTarget2D* USpoutBPFunctionLibrary::CreateTextureRenderTarget2D(int32 w, int32 h, EPixelFormat pixelFormat, bool forceLinearGamma) {
+	UTextureRenderTarget2D* textureTarget = NewObject<UTextureRenderTarget2D>();
+	textureTarget->bNeedsTwoCopies = true;
+	textureTarget->InitCustomFormat(w, h, pixelFormat, forceLinearGamma);
+	textureTarget->AddressX = TextureAddress::TA_Wrap;
+	textureTarget->AddressY = TextureAddress::TA_Wrap;
+	textureTarget->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+
+	textureTarget->AddToRoot();
+	textureTarget->UpdateResourceW();
+
+	return textureTarget;
+}
 
 void initSpout()
 {
@@ -317,8 +330,6 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName spoutName, ESpoutSendTextureFrom
 
 	ID3D11Texture2D* baseTexture = 0;
 	FSenderStruct* SenderStruct = 0;
-
-	//UTextureRenderTarget2D* OutputTexture = NewObject<UTextureRenderTarget2D>();
 	
 	switch (sendTextureFrom)
 	{

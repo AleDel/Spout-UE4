@@ -132,4 +132,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static void GetMaxSenders(int32& max);
+
+	UFUNCTION(BlueprintCallable, Category = "Spout")
+		static UTextureRenderTarget2D* CreateTextureRenderTarget2D(int32 w=1024, int32 h=768, EPixelFormat pixelFormat= EPixelFormat::PF_B8G8R8A8, bool forceLinearGamma = true );
 };
