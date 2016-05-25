@@ -1,4 +1,5 @@
 #include "SpoutPluginPrivatePCH.h"
+#include "../Public/SpoutBPFunctionLibrary.h"
 
 static ID3D11Device* g_D3D11Device;
 ID3D11DeviceContext* g_pImmediateContext = NULL;
@@ -367,7 +368,14 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName spoutName, ESpoutSendTextureFrom
 	if (state == ESpoutState::ER) {
 		GetSpoutRegistred(spoutName, SenderStruct);
 		if (SenderStruct->spoutType == ESpoutType::Sender) {
-
+			// Check whether texture size has changed
+			D3D11_TEXTURE2D_DESC td;
+			baseTexture->GetDesc(&td);
+			if (td.Width != SenderStruct->w || td.Height != SenderStruct->h) {
+				UE_LOG(SpoutLog, Warning, TEXT("Texture Size has changed, Updating registered spout: "), *spoutName.GetPlainNameString());
+				UpdateRegisteredSpout(spoutName, baseTexture);
+				return false;
+			}
 		}
 		if (SenderStruct->spoutType == ESpoutType::Receiver) {
 			UE_LOG(SpoutLog, Warning, TEXT("Already exist a Sender with the name %s and you have a receiver in unreal receiving"), *spoutName.GetPlainNameString());
@@ -627,4 +635,58 @@ void USpoutBPFunctionLibrary::CloseSender(FName spoutName)
 	UE_LOG(SpoutLog, Warning, TEXT("There are now %i senders remaining "), FSenders.Num());
 	
 
+}
+
+
+bool USpoutBPFunctionLibrary::UpdateRegisteredSpout(FName spoutName, ID3D11Texture2D * baseTexture)
+{
+	HANDLE sharedSendingHandle = NULL;
+	bool texResult = false;
+	bool updateResult = false;
+	bool senderResult = false;
+
+	D3D11_TEXTURE2D_DESC desc;
+	baseTexture->GetDesc(&desc);
+	ID3D11Texture2D * sendingTexture;
+
+	UE_LOG(SpoutLog, Warning, TEXT("ID3D11Texture2D Info : ancho_%i, alto_%i"), desc.Width, desc.Height);
+	UE_LOG(SpoutLog, Warning, TEXT("ID3D11Texture2D Info : Format is %i"), int(desc.Format));
+
+	//use the pixel format from basetexture (the native texture textureRenderTarget2D)
+	DXGI_FORMAT texFormat = desc.Format;
+	if (desc.Format == DXGI_FORMAT_B8G8R8A8_TYPELESS) {
+		texFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+	}
+
+	texResult = sdx->CreateSharedDX11Texture(g_D3D11Device, desc.Width, desc.Height, texFormat, &sendingTexture, sharedSendingHandle);
+	UE_LOG(SpoutLog, Warning, TEXT("Create shared Texture with SDX : %i"), texResult);
+
+	if (!texResult)
+	{
+		UE_LOG(SpoutLog, Error, TEXT("SharedDX11Texture creation failed"));
+		return 0;
+	}
+
+	// update register
+	UE_LOG(SpoutLog, Warning, TEXT("Updating Sender in Sender list"));
+
+	for (int32 Index = 0; Index != FSenders.Num(); ++Index)
+	{
+		if (FSenders[Index].sName == spoutName) {
+			FSenders[Index].SetW(desc.Width);
+			FSenders[Index].SetH(desc.Height);
+			FSenders[Index].SetName(spoutName);
+			FSenders[Index].bIsAlive = true;
+			FSenders[Index].spoutType = ESpoutType::Sender;
+			FSenders[Index].SetHandle(sharedSendingHandle);
+			FSenders[Index].activeTextures = sendingTexture;
+
+			FSenders[Index].MaterialInstanceColor = nullptr;
+			FSenders[Index].TextureColor = nullptr;
+
+			senderResult = true;
+		}
+	}
+
+	return senderResult;
 }
