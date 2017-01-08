@@ -100,7 +100,9 @@ UTextureRenderTarget2D* USpoutBPFunctionLibrary::CreateTextureRenderTarget2D(int
 	textureTarget->InitCustomFormat(w, h, pixelFormat, forceLinearGamma);
 	textureTarget->AddressX = TextureAddress::TA_Wrap;
 	textureTarget->AddressY = TextureAddress::TA_Wrap;
+	#if WITH_EDITORONLY_DATA
 	textureTarget->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+	#endif
 
 	textureTarget->AddToRoot();
 	textureTarget->UpdateResourceW();
