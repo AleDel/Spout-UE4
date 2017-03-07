@@ -1,6 +1,13 @@
 #include "SpoutPluginPrivatePCH.h"
 #include "../Public/SpoutBPFunctionLibrary.h"
 
+#include <string>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+
+
+
 static ID3D11Device* g_D3D11Device;
 ID3D11DeviceContext* g_pImmediateContext = NULL;
 
@@ -18,8 +25,7 @@ FName TextureParameterName = "SpoutTexture";
 void DestroyTexture(UTexture2D*& Texture)
 {
 	// Here we destory the texture and its resource
-	if (Texture)
-	{
+	if (Texture){
 		Texture->RemoveFromRoot();
 
 		if (Texture->Resource)
@@ -30,8 +36,7 @@ void DestroyTexture(UTexture2D*& Texture)
 
 		Texture->MarkPendingKill();
 		Texture = nullptr;
-	}
-	else{
+	}else{
 		UE_LOG(SpoutLog, Warning, TEXT("Texture is ready"));
 	}
 }
@@ -514,23 +519,52 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 	}
 	D3D11_TEXTURE2D_DESC description;
 	tex->GetDesc(&description);
-	description.BindFlags = 0;
 	description.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	description.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+
 	description.Usage = D3D11_USAGE_STAGING;
+	//description.Usage = D3D11_USAGE_DEFAULT;
+	//description.Usage = D3D11_USAGE_DYNAMIC;
+
+	description.BindFlags = 0;
+	//description.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//description.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	//description.BindFlags = D3D11_BIND_VIDEO_ENCODER;
+	//description.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+	
+	//description.CPUAccessFlags = 0;
+	//description.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	description.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+	//description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	
+	description.MiscFlags = 0;
+	description.MipLevels = 1;
+	description.ArraySize = 1;
+	
+	
 
 	ID3D11Texture2D* texTemp = NULL;
 
 	HRESULT hr = g_D3D11Device->CreateTexture2D(&description, NULL, &texTemp);
+	
 	if (FAILED(hr))
 	{
+		std::stringstream ss;
+		ss << " Error code = 0x" << std::hex << hr << std::endl;
+		std::cout << ss.str() << std::endl;
+		std::string TestString = ss.str();
+		UE_LOG(SpoutLog, Error, TEXT("Failed Create Texture: ----> %s"), *FString(TestString.c_str()));
+
+		if (hr == E_OUTOFMEMORY) {
+			UE_LOG(SpoutLog, Error, TEXT("OUT OF MEMORY"));
+		}
 		if (texTemp)
 		{
 			texTemp->Release();
 			texTemp = NULL;
 		}
-		//return NULL;
 		UE_LOG(SpoutLog, Error, TEXT("error creating temporal textura"));
+		return NULL;
+		
 	}
 	
 	ENQUEUE_UNIQUE_RENDER_COMMAND_FOURPARAMETER(
