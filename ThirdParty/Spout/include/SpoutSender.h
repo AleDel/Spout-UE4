@@ -3,7 +3,7 @@
 					SpoutSender.h
  
 
-		Copyright (c) 2014-2015, Lynn Jarvis. All rights reserved.
+		Copyright (c) 2014-2017, Lynn Jarvis. All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without modification, 
 		are permitted provided that the following conditions are met:
@@ -40,13 +40,11 @@ class SPOUT_DLLEXP SpoutSender {
 	SpoutSender();
     ~SpoutSender();
 
-	// bool CreateSender(const char *Sendername, unsigned int width, unsigned int height, DWORD dwFormat = 0);
-	bool CreateSender(char *Sendername, unsigned int width, unsigned int height, DWORD dwFormat = 0);
-	// bool UpdateSender(const char *Sendername, unsigned int width, unsigned int height);
-	bool UpdateSender(char *Sendername, unsigned int width, unsigned int height);
+	bool CreateSender(const char *Sendername, unsigned int width, unsigned int height, DWORD dwFormat = 0);
+	bool UpdateSender(const char *Sendername, unsigned int width, unsigned int height);
 	void ReleaseSender(DWORD dwMsec = 0);
 
-	bool SendImage(unsigned char* pixels, unsigned int width, unsigned int height, GLenum glFormat = GL_RGBA, bool bAlignment = true, bool bInvert=false);
+	bool SendImage(const unsigned char* pixels, unsigned int width, unsigned int height, GLenum glFormat = GL_RGBA, bool bInvert=false, GLuint HostFBO = 0);
 	bool SendTexture(GLuint TextureID, GLuint TextureTarget, unsigned int width, unsigned int height, bool bInvert=true, GLuint HostFBO = 0);
 	bool DrawToSharedTexture(GLuint TextureID, GLuint TextureTarget, unsigned int width, unsigned int height, float max_x = 1.0, float max_y = 1.0, float aspect = 1.0, bool bInvert = false, GLuint HostFBO = 0);
 
@@ -56,6 +54,12 @@ class SPOUT_DLLEXP SpoutSender {
 	bool GetDX9();
 	bool SetMemoryShareMode(bool bMem = true);
 	bool GetMemoryShareMode();
+	bool SetCPUmode(bool bCPU = true);
+	bool GetCPUmode();
+	int  GetShareMode();
+	bool SetShareMode(int mode);
+	void SetBufferMode(bool bActive); // Set the pbo availability on or off
+	bool GetBufferMode();
 
 	void SetDX9compatible(bool bCompatible = true); // DirectX 11 format compatible with DirectX 9
 	bool GetDX9compatible();
@@ -72,11 +76,9 @@ class SPOUT_DLLEXP SpoutSender {
 
 	bool SenderDebug(char *Sendername, int size);
 
-	Spout spout; // LJ DEBUG - for testing
+	Spout spout; // For access to all functions
 
 protected :
-
-	bool bInv; // LJ DEBUG Transition flag for a 2.005 app with a 2.004 user installation
 
 };
 

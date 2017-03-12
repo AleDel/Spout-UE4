@@ -5,14 +5,12 @@
 	Spout memory map management for sharing images via shared memory
 	Revised over original single reader/writer pair
 
-	LJ - leadedge@adam.com.au
-
 	Thanks and credit to Malcolm Bechard for the SpoutSharedMemory class
 
 	https://github.com/mbechard	
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		Copyright (c) 2014-2015, Lynn Jarvis. All rights reserved.
+		Copyright (c) 2014-2017, Lynn Jarvis. All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without modification, 
 		are permitted provided that the following conditions are met:
@@ -33,7 +31,6 @@
 		INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 		OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 
  */
 #pragma once
@@ -66,10 +63,6 @@ class SPOUT_DLLEXP spoutMemoryShare {
 		// Lock and unlock memory and retrieve buffer pointer
 		unsigned char * LockSenderMemory();
 		void UnlockSenderMemory();
-
-		// TODO : Basic write and read ?
-		// bool WriteSenderMemory(const char *buffer, int nBytes);
-		// bool ReadSenderMemory (const char *buffer, int nBytes);
 
 		// Close and release memory object
 		void ReleaseSenderMemory ();

@@ -5,7 +5,7 @@
 	DirectX functions to manage DirectX 11 texture sharing
 
 
-		Copyright (c) 2014 - 2015, Lynn Jarvis. All rights reserved.
+		Copyright (c) 2014 - 2017, Lynn Jarvis. All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without modification, 
 		are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@
 #include <windowsx.h>
 #include <d3d9.h>
 #include <d3d11.h>
-#include <DXGI.h> // LJ DEBUG
+// #include <DXGI.h> // LJ DEBUG
 #include <string>
 #include <iostream>
 
@@ -57,14 +57,13 @@ class SPOUT_DLLEXP spoutDirectX {
 		IDirect3D9Ex* CreateDX9object(); // Create a DirectX9 object
 		IDirect3DDevice9Ex* CreateDX9device(IDirect3D9Ex* pD3D, HWND hWnd);	// Create a DirectX9 device
 		bool CreateSharedDX9Texture(IDirect3DDevice9Ex* pDevice, unsigned int width, unsigned int height, D3DFORMAT format, LPDIRECT3DTEXTURE9 &dxTexture, HANDLE &dxShareHandle);
-		// LJ DEBUG : TODO
-		// bool ReadSharedDX9texture(IDirect3DDevice9Ex* pDevice, LPDIRECT3DTEXTURE9 &dxTexture, HANDLE &dxShareHandle, unsigned char *pixels, unsigned int width, unsigned int height);
+		bool WriteDX9surface(IDirect3DDevice9Ex* pDevice, LPDIRECT3DTEXTURE9 dxTexture, LPDIRECT3DSURFACE9 source_surface);
 
 		// DX11
 		ID3D11Device* CreateDX11device(); // Create a DX11 device
 		bool CreateSharedDX11Texture(ID3D11Device* pDevice, unsigned int width, unsigned int height, DXGI_FORMAT format, ID3D11Texture2D** pSharedTexture, HANDLE &dxShareHandle);
+		bool CreateDX11StagingTexture(ID3D11Device* pDevice, unsigned int width, unsigned int height, DXGI_FORMAT format, ID3D11Texture2D** pStagingTexture);
 		bool OpenDX11shareHandle(ID3D11Device* pDevice, ID3D11Texture2D** ppSharedTexture, HANDLE dxShareHandle);
-		void CloseDX11();
 
 		// Output adapter selection
 		int GetNumAdapters(); // Get the number of graphics adapters in the system
@@ -72,41 +71,17 @@ class SPOUT_DLLEXP spoutDirectX {
 		bool SetAdapter(int index); // Set required graphics adapter for output
 		int GetAdapter(); // Get the current adapter index
 		bool GetAdapterInfo(char *renderdescription, char *displaydescription, int maxchars);
+		bool FindNVIDIA(int &nAdapter); // Find the index of the NVIDIA adapter in a multi-adapter system
 
-		// Registry read/write
-		// 20.11.15 - moved from interop class
+		// Registry read/write - 20.11.15 - moved from interop class
 		bool ReadDwordFromRegistry(DWORD *pValue, const char *subkey, const char *valuename);
 		bool WriteDwordToRegistry(DWORD dwValue, const char *subkey, const char *valuename);
 
-		// Mutex locks for DirectX 9 shared texture access
+		// Mutex locks for shared texture access
 		bool CreateAccessMutex(const char *name, HANDLE &hAccessMutex);
 		void CloseAccessMutex(HANDLE &hAccessMutex);
-		bool CheckAccess(HANDLE hAccessMutex, ID3D11Texture2D* pSharedTexture = NULL);
-		void AllowAccess(HANDLE hAccessMutex, ID3D11Texture2D* pSharedTexture = NULL);
-
-		// LJ DEBUG
-		// Receiver access mutex - created by a receiver
-		//
-		// Sender :
-		//		o CheckReceiverAccess
-		//		o	write texture
-		//		o AllowReceiverAcess
-		//
-		//	Receiver :
-		//		o CheckSenderAccess  (CheckAccess)
-		//		o   read texture
-		//		o AllowSenderAccess  (AllowAccess)	
-		//
-		//	Common :
-		//		CreateAccessMutex
-		//		CloseAccessMutex
-		//		CreateReceiverAccessMutex
-		//		CloseRecieverAccessMutex
-		//
-		bool CreateReceiverAccessMutex(const char *name, HANDLE &hAccessMutex);
-		void CloseReceiverAccessMutex(HANDLE &hAccessMutex);
-		bool CheckReceiverAccess(HANDLE hAccessMutex);
-		void AllowReceiverAccess(HANDLE hAccessMutex);
+		bool CheckAccess(HANDLE hAccessMutex);
+		void AllowAccess(HANDLE hAccessMutex);
 
 		// For debugging only - to toggle texture access locks disable/enable
 		bool bUseAccessLocks;
