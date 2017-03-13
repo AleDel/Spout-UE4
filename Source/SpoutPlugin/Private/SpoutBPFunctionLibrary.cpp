@@ -110,7 +110,8 @@ UTextureRenderTarget2D* USpoutBPFunctionLibrary::CreateTextureRenderTarget2D(int
 	#endif
 
 	textureTarget->AddToRoot();
-	textureTarget->UpdateResourceW();
+	//textureTarget->UpdateResourceW();
+	textureTarget->UpdateResource();
 
 	return textureTarget;
 }
@@ -428,7 +429,7 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName spoutName, ESpoutSendTextureFrom
 	return result;
 }
 
-bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInstanceDynamic*& mat)
+bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInstanceDynamic*& mat, UTexture2D*& texture)
 {
 	const FString SenderNameString = spoutName.GetPlainNameString();
 	int32 Width;
@@ -515,6 +516,7 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 
 	ID3D11Texture2D* tex = (ID3D11Texture2D*)tempResource11;
 	if (tex == nullptr) {
+		UE_LOG(SpoutLog, Error, TEXT("---|||------||||----"));
 		return false;
 	}
 	D3D11_TEXTURE2D_DESC description;
@@ -605,15 +607,18 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 		});
 		
 	/**/
-	if (SenderStruct->MaterialInstanceColor != nullptr)
+	if (SenderStruct->MaterialInstanceColor != nullptr && SenderStruct->TextureColor != nullptr)
 	{
 		//mat = MaterialInstanceColor;
+		texture = SenderStruct->TextureColor;
 		mat = SenderStruct->MaterialInstanceColor;
 		return true;
 	}
 	else{
+		UE_LOG(SpoutLog, Error, TEXT("------||||-------"));
 		//mat = static_cast<UMaterialInstanceDynamic*>(BaseMaterial);
-		mat = NULL;
+		mat = nullptr;
+		texture = nullptr;
 		return false;
 	}
 }

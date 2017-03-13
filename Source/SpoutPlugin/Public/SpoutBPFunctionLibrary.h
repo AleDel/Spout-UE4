@@ -12,14 +12,14 @@
 #include "SpoutBPFunctionLibrary.generated.h"
 
 UENUM(BlueprintType)
-enum class ESpoutType
+enum class ESpoutType : uint8
 {
 	Sender,
 	Receiver
 };
 
 UENUM(BlueprintType)
-enum class ESpoutState
+enum class ESpoutState : uint8
 {
 	ER,
 	EnoR,
@@ -28,7 +28,7 @@ enum class ESpoutState
 };
 
 UENUM(BlueprintType)
-enum class ESpoutSendTextureFrom
+enum class ESpoutSendTextureFrom : uint8
 {
 	GameViewport,
 	TextureRenderTarget2D
@@ -119,7 +119,7 @@ public:
 		static void CloseSender(FName spoutName);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static bool SpoutReceiver(const FName spoutName, UMaterialInstanceDynamic*& mat);
+		static bool SpoutReceiver(const FName spoutName, UMaterialInstanceDynamic*& mat, UTexture2D*& texture);
 	
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static bool SpoutInfo(TArray<FSenderStruct>& Senders);
