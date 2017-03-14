@@ -511,10 +511,24 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 	ID3D11Resource * tempResource11 = nullptr;
 	ID3D11ShaderResourceView * rView = nullptr;
 	
+	
 	HRESULT openResult = g_D3D11Device->OpenSharedResource(SenderStruct->sHandle, __uuidof(ID3D11Resource), (void**)(&tempResource11));
-	g_D3D11Device->CreateShaderResourceView(tempResource11, NULL, &rView);
+	
+	if (FAILED(openResult)) {
+		UE_LOG(SpoutLog, Error, TEXT("--FAIL--___Open Shared Resource___---"));
+		return false;
+		
+	}
+	HRESULT createShaderResourceViewResult = g_D3D11Device->CreateShaderResourceView(tempResource11, NULL, &rView);
+	if (FAILED(createShaderResourceViewResult)) {
+		UE_LOG(SpoutLog, Error, TEXT("--FAIL--___Create Shader Resource View___---"));
+		return false;
 
+	}
+
+	//texture shared for the spout resource handle
 	ID3D11Texture2D* tex = (ID3D11Texture2D*)tempResource11;
+
 	if (tex == nullptr) {
 		UE_LOG(SpoutLog, Error, TEXT("---|||------||||----"));
 		return false;
@@ -543,7 +557,7 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 	description.ArraySize = 1;
 	
 	
-
+	//  Temporal texture idem to the spout texture description
 	ID3D11Texture2D* texTemp = NULL;
 
 	HRESULT hr = g_D3D11Device->CreateTexture2D(&description, NULL, &texTemp);
@@ -568,7 +582,8 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 		return NULL;
 		
 	}
-	
+
+	//communication between the two threads (rendering thread and game thread)
 	ENQUEUE_UNIQUE_RENDER_COMMAND_FOURPARAMETER(
 		void,
 		ID3D11Texture2D*, t_texTemp, texTemp,
@@ -582,7 +597,8 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 			}
 
 			g_pImmediateContext->CopyResource(t_texTemp, t_tex);
-			g_pImmediateContext->Flush();
+			//g_pImmediateContext->Flush(); <------ No Flush
+			
 			D3D11_MAPPED_SUBRESOURCE  mapped;
 			//Gets a pointer to the data contained in a subresource, and denies the GPU access to that subresource.
 			// with CPU read permissions (D3D11_MAP_READ)
@@ -590,22 +606,30 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 			if (FAILED(hr))
 			{
 				t_texTemp->Release();
-				t_texTemp = NULL;
 				
 				UE_LOG(SpoutLog, Error, TEXT("Fallo crear mapped"));
 				return;
 			}
 			BYTE *pixel = (BYTE *)mapped.pData;
 			g_pImmediateContext->Unmap(t_texTemp, 0);
+			
 
 			//Update Texture
 			RHIUpdateTexture2D(Params->Texture2DResource->GetTexture2DRHI(), 0, *Params->UpdateRegions, Stride, (uint8*)pixel);
 			
 			//Clean Textura Temporal
 			t_texTemp->Release();
-			t_texTemp = NULL;
+			t_tex->Release();
+
 		});
-		
+
+	//// Sure Release temp textures
+	/*tempResource11->Release();
+	tex->Release();
+	texTemp->Release();
+	rView->Release();*/
+	
+
 	/**/
 	if (SenderStruct->MaterialInstanceColor != nullptr && SenderStruct->TextureColor != nullptr)
 	{
