@@ -23,7 +23,7 @@ public class SpoutPlugin : ModuleRules
         PublicIncludePaths.AddRange(
             new string[] {
 				"SpoutPlugin/Public",
-                Path.Combine(ThirdPartyPath, "Spout/include")
+                
 				
 				// ... add public include paths required here ...
 			}
@@ -33,6 +33,7 @@ public class SpoutPlugin : ModuleRules
         PrivateIncludePaths.AddRange(
             new string[] {
 				"SpoutPlugin/Private",
+                Path.Combine(ThirdPartyPath, "Spout/include")
 				// ... add other private include paths required here ...
 			}
             );
@@ -46,7 +47,8 @@ public class SpoutPlugin : ModuleRules
 				"CoreUObject",
                 "Engine",
                 "RHI",
-                "RenderCore"
+                "RenderCore",
+                "Projects",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -86,13 +88,17 @@ public class SpoutPlugin : ModuleRules
 
         if ((Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32))
         {
+
             string PlatformString = (Target.Platform == UnrealTargetPlatform.Win64) ? "amd64" : "x86";
+
+            // Delay-load the DLL, so we can load it from the right place first
+            PublicDelayLoadDLLs.Add(Path.Combine(ThirdPartyPath, "Spout/lib", PlatformString, "Spout.dll"));
+
             PublicAdditionalLibraries.Add(Path.Combine(ThirdPartyPath, "Spout/lib", PlatformString, "Spout.lib"));
 
-            RuntimeDependencies.Add(new RuntimeDependency(Path.Combine(ThirdPartyPath, "Spout/lib", PlatformString, "Spout.dll")));
+            //RuntimeDependencies.Add(new RuntimeDependency(Path.Combine(ThirdPartyPath, "Spout/lib", PlatformString, "Spout.dll")));
             
-            // Delay-load the DLL, so we can load it from the right place first
-            //PublicDelayLoadDLLs.Add(Path.Combine(ThirdPartyPath, "Spout/lib", PlatformString, "Spout.dll"));
+            
             
             /*PublicIncludePaths.AddRange(
                 new string[] {

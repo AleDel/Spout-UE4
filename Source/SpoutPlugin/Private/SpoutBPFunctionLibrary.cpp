@@ -206,6 +206,16 @@ bool USpoutBPFunctionLibrary::SpoutInfo(TArray<FSenderStruct>& Senders){
 	return true;
 }
 
+bool USpoutBPFunctionLibrary::GetActiveSender(FName& senderName) {
+	senderName = "NoSender";
+	/*char newname[256];
+	if (sender->GetActiveSender(newname)) {
+		senderName = newname;
+	}*/
+	
+	return true;
+}
+
 bool USpoutBPFunctionLibrary::SpoutInfoFrom(FName spoutName, FSenderStruct& SenderStruct){
 	
 	//Existe en mi lista ??
