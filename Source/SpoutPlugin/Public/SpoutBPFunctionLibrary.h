@@ -75,6 +75,10 @@ struct FSenderStruct
 		//Sender
 		ID3D11Texture2D *activeTextures;
 
+		ID3D11Resource * sharedResource;
+		ID3D11ShaderResourceView * rView;
+		ID3D11Texture2D* texTemp;
+
 	void SetName(FName NewsName)
 	{
 		sName = NewsName;
