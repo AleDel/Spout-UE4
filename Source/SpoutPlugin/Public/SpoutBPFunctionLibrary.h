@@ -34,7 +34,7 @@ enum class ESpoutSendTextureFrom : uint8
 	TextureRenderTarget2D
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FSenderStruct
 {
 	GENERATED_USTRUCT_BODY()
