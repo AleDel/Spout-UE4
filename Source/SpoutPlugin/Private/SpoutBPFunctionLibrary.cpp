@@ -563,18 +563,16 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 					if (Params == nullptr) {
 						return;
 					}
-					//UE_LOG(SpoutLog, Error, TEXT("antes flush"));
+		
 					g_pImmediateContext->CopyResource(t_texTemp, t_tex);
 					//g_pImmediateContext->Flush(); //<------ No Flush
-					//UE_LOG(SpoutLog, Error, TEXT("despues flush"));
-
+					
 					D3D11_MAPPED_SUBRESOURCE  mapped;
 					//Gets a pointer to the data contained in a subresource, and denies the GPU access to that subresource.
 					// with CPU read permissions (D3D11_MAP_READ)
 					HRESULT hr = g_pImmediateContext->Map(t_texTemp, 0, D3D11_MAP_READ, 0, &mapped);
 					if (FAILED(hr))
 					{
-						UE_LOG(SpoutLog, Error, TEXT("Fallo crear mapped"));
 						t_texTemp->Release();
 						return;
 					}
@@ -583,7 +581,7 @@ bool USpoutBPFunctionLibrary::SpoutReceiver(const FName spoutName, UMaterialInst
 
 
 					//Update Texture
-					RHIUpdateTexture2D(Params->Texture2DResource->GetTexture2DRHI(), 0, *Params->UpdateRegions, Stride, (uint8*)pixel);
+					RHIUpdateTexture2D(Params->Texture2DResource->GetTexture2DRHI(), 0, *Params->UpdateRegions, mapped.RowPitch, (uint8*)pixel);
 
 
 				});
