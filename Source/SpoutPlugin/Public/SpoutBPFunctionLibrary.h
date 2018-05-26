@@ -108,7 +108,7 @@ struct FSenderStruct
 
 
 UCLASS(ClassGroup = Spout, Blueprintable)
-class USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
+class SPOUTPLUGIN_API USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
