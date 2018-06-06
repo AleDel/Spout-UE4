@@ -12,14 +12,14 @@
 #include "SpoutBPFunctionLibrary.generated.h"
 
 UENUM(BlueprintType)
-enum class ESpoutType
+enum class ESpoutType : uint8
 {
 	Sender,
 	Receiver
 };
 
 UENUM(BlueprintType)
-enum class ESpoutState
+enum class ESpoutState : uint8
 {
 	ER,
 	EnoR,
@@ -28,13 +28,13 @@ enum class ESpoutState
 };
 
 UENUM(BlueprintType)
-enum class ESpoutSendTextureFrom
+enum class ESpoutSendTextureFrom : uint8
 {
 	GameViewport,
 	TextureRenderTarget2D
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FSenderStruct
 {
 	GENERATED_USTRUCT_BODY()
@@ -75,6 +75,10 @@ struct FSenderStruct
 		//Sender
 		ID3D11Texture2D *activeTextures;
 
+		ID3D11Resource * sharedResource;
+		ID3D11ShaderResourceView * rView;
+		ID3D11Texture2D* texTemp;
+
 	void SetName(FName NewsName)
 	{
 		sName = NewsName;
@@ -104,7 +108,7 @@ struct FSenderStruct
 
 
 UCLASS(ClassGroup = Spout, Blueprintable)
-class USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
+class SPOUTPLUGIN_API USpoutBPFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
@@ -119,7 +123,7 @@ public:
 		static void CloseSender(FName spoutName);
 
 	UFUNCTION(BlueprintCallable, Category = "Spout")
-		static bool SpoutReceiver(const FName spoutName, UMaterialInstanceDynamic*& mat);
+		static bool SpoutReceiver(const FName spoutName, UMaterialInstanceDynamic*& mat, UTexture2D*& texture);
 	
 	UFUNCTION(BlueprintCallable, Category = "Spout")
 		static bool SpoutInfo(TArray<FSenderStruct>& Senders);

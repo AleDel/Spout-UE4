@@ -3,14 +3,12 @@
 	spoutSenderNames.h
 	Spout sender management
 
-	LJ - leadedge@adam.com.au
-
 	Thanks and credit to Malcolm Bechard for modifications to this class
 
 	https://github.com/mbechard	
 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		Copyright (c) 2014-2015, Lynn Jarvis. All rights reserved.
+		Copyright (c) 2014-2017, Lynn Jarvis. All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without modification, 
 		are permitted provided that the following conditions are met:
@@ -61,6 +59,12 @@
 // See : http://msdn.microsoft.com/en-us/library/windows/desktop/aa384203%28v=vs.85%29.aspx
 // This is also compatible with wyphon : 
 // The structure is declared here so that this class is can be independent of opengl
+//
+// 03.07-16 - Use helper functions for conversion of 64bit HANDLE to unsigned __int32
+// and unsigned __int32 to 64bit HANDLE
+// https://msdn.microsoft.com/en-us/library/aa384267%28VS.85%29.aspx
+// in SpoutGLDXinterop.cpp and SpoutSenderNames
+//
 struct SharedTextureInfo {
 	unsigned __int32 shareHandle;
 	unsigned __int32 width;
@@ -83,8 +87,6 @@ class SPOUT_DLLEXP spoutSenderNames {
 
 		// ------------------------------------------------------------
 		// You must first register a sender name being using
-		// UpdateSender() to update it's texture information
-		// TODO - revise functions
 		bool RegisterSenderName(const char* senderName);
 		bool ReleaseSenderName(const char* senderName);
 		bool FindSenderName     (const char* Sendername);
@@ -95,6 +97,7 @@ class SPOUT_DLLEXP spoutSenderNames {
 		int  GetSenderCount();
 		bool GetSenderNameInfo (int index, char* sendername, int sendernameMaxSize, unsigned int &width, unsigned int &height, HANDLE &dxShareHandle);
 
+		// ------------------------------------------------------------
 		// New for 2.005
 		int GetMaxSenders();
 		void SetMaxSenders(int maxSenders); // Set the maximum number of senders in a new sender map
@@ -119,8 +122,8 @@ class SPOUT_DLLEXP spoutSenderNames {
 		// Functions to Create, Find or Update a sender without initializing DirectX or the GL/DX interop functions
 		bool CreateSender (const char *sendername, unsigned int width, unsigned int height, HANDLE hSharehandle, DWORD dwFormat = 0);
 		bool UpdateSender (const char *sendername, unsigned int width, unsigned int height, HANDLE hSharehandle, DWORD dwFormat = 0);
-		bool FindSender       (char *sendername, unsigned int &width, unsigned int &height, HANDLE &hSharehandle, DWORD &dwFormat);
-		bool CheckSender      (const char *sendername, unsigned int &width, unsigned int &height, HANDLE &hSharehandle, DWORD &dwFormat);
+		bool CheckSender  (const char *sendername, unsigned int &width, unsigned int &height, HANDLE &hSharehandle, DWORD &dwFormat);
+		bool FindSender   (char *sendername, unsigned int &width, unsigned int &height, HANDLE &hSharehandle, DWORD &dwFormat);
 		// ------------------------------------------------------------
 
 		// Debug function
@@ -154,8 +157,7 @@ protected:
 		// Make this a pointer to avoid size differences between compilers
 		// if the .dll is compiled with something different
 		std::unordered_map<std::string, SpoutSharedMemory*>*	m_senders;
-		int m_MaxSenders; // user defined maximum for the number of senders
-
+		int m_MaxSenders; // user defined maximum for the number of senders - development testing only
 
 };
 

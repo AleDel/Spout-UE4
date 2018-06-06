@@ -5,7 +5,7 @@ Sender and Receiver only DirectX 11.
 
 # Installation and Use
 
-Put code in folder Plugins (for example "yourproject/Plugins/Spout-UE4")
+Put code in folder Plugins (for example "yourproject/Plugins/SpoutUE4")
 
 # Info
 

@@ -31,7 +31,7 @@
 //
 /*
 
-		Copyright (c) 2014-2015, Lynn Jarvis. All rights reserved.
+		Copyright (c) 2014-2017, Lynn Jarvis. All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without modification, 
 		are permitted provided that the following conditions are met:
@@ -65,24 +65,21 @@
 // *** Load of FBO extensions conflicts with FFGL or Jitter, disable them here ***
 #define USE_FBO_EXTENSIONS // don't use for jitter
 
-// If load of PBO extensions conflicts with Jitter disable them here
-// #define USE_PBO_EXTENSIONS // don't use for openframeworks or jitter
+// If load of PBO extensions conflicts, disable them here - OK for Jitter
+#define USE_PBO_EXTENSIONS
 
 #include <windows.h>
 #include <stdio.h> // for debug print
 #ifdef USE_GLEW
-#include <GL\glew.h>
-#include <GL\wglew.h> // wglew.h and glxew.h, which define the available WGL and GLX extensions
-#endif
-
-
-// For Max/Msp Jitter
-#ifndef USE_GLEW
-#include <GL\GL.h>
-#ifndef USE_FBO_EXTENSIONS
-#include "jit.gl.h"
-#define glDeleteFramebuffersEXT	(_jit_gl_get_proctable()->DeleteFramebuffersEXT)
-#endif
+	#include <GL\glew.h>
+	#include <GL\wglew.h> // wglew.h and glxew.h, which define the available WGL and GLX extensions
+#else
+	#include <GL\GL.h>
+	#ifndef USE_FBO_EXTENSIONS
+		// For Max/Msp Jitter
+		#include "jit.gl.h"
+		#define glDeleteFramebuffersEXT	(_jit_gl_get_proctable()->DeleteFramebuffersEXT)
+	#endif
 #endif
 
 #ifndef GL_CLAMP_TO_EDGE
@@ -117,6 +114,7 @@
 #define GLEXT_SUPPORT_FBO_BLIT		 4
 #define GLEXT_SUPPORT_PBO			 8
 #define GLEXT_SUPPORT_SWAP			16
+#define GLEXT_SUPPORT_BGRA			32
 
 //-----------------------------------------------------
 // GL consts that are needed and aren't present in GL.h
@@ -127,7 +125,6 @@
 #define WGL_ACCESS_WRITE_DISCARD_NV		0x0002
 
 #define GL_CLAMP_TO_EDGE				0x812F
-#define GL_BGR							0x80E0 // 02.01.15 - For SpoutCam
 
 #ifndef USE_GLEW
 
@@ -260,6 +257,7 @@ extern glRenderbufferStorageEXTPROC					glRenderbufferStorageEXT;
 typedef void   (APIENTRY *glBlitFramebufferEXTPROC) (GLint srcX0,GLint srcY0,GLint srcX1,GLint srcY1,GLint dstX0,GLint dstY0,GLint dstX1,GLint dstY1,GLbitfield mask,GLenum filter);
 extern glBlitFramebufferEXTPROC glBlitFramebufferEXT;
 
+
 // ------------------------------
 // OpenGL sync control extensions
 // ------------------------------
@@ -279,7 +277,10 @@ extern PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT;
 #define GL_PIXEL_PACK_BUFFER_BINDING	0x88ED
 #define GL_PIXEL_UNPACK_BUFFER_BINDING	0x88EF
 #define GL_STREAM_DRAW					0x88E0
+#define GL_STREAM_READ					0x88E1
+#define GL_READ_ONLY					0x88B8
 #define GL_WRITE_ONLY					0x88B9
+
 
 // PBO functions
 typedef ptrdiff_t GLsizeiptr;
@@ -290,12 +291,12 @@ typedef void   (APIENTRY *glBufferDataPROC) (GLenum target,  GLsizeiptr size,  c
 typedef void * (APIENTRY *glMapBufferPROC) (GLenum target,  GLenum access);
 typedef void   (APIENTRY *glUnmapBufferPROC) (GLenum target);
 
-extern glGenBuffersPROC		glGenBuffers;
-extern glDeleteBuffersPROC	glDeleteBuffers;
-extern glBindBufferPROC		glBindBuffer;
-extern glBufferDataPROC		glBufferData;
-extern glMapBufferPROC		glMapBuffer;
-extern glUnmapBufferPROC	glUnmapBuffer;
+extern glGenBuffersPROC		glGenBuffersEXT;
+extern glDeleteBuffersPROC	glDeleteBuffersEXT;
+extern glBindBufferPROC		glBindBufferEXT;
+extern glBufferDataPROC		glBufferDataEXT;
+extern glMapBufferPROC		glMapBufferEXT;
+extern glUnmapBufferPROC	glUnmapBufferEXT;
 #endif // USE_PBO_EXTENSIONS
 
 #endif // end GLEW
@@ -310,5 +311,6 @@ bool loadFBOextensions();
 bool loadBLITextension();
 bool loadSwapExtensions();
 bool loadPBOextensions();
+// bool isExtensionSupported(const char *extension);
 
 #endif
