@@ -17,7 +17,7 @@ public class SpoutPlugin : ModuleRules
         get { return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty/")); }
     }
     
-	public SpoutPlugin(TargetInfo Target)
+	public SpoutPlugin(ReadOnlyTargetRules Target) : base(Target)
 	{
 
         PublicIncludePaths.AddRange(
@@ -68,21 +68,7 @@ public class SpoutPlugin : ModuleRules
 			}
             );
 			
-		/*Type = ModuleType.External;
-
-		if (Target.Platform == UnrealTargetPlatform.Win64)
-		{
-			// Add the import library
-			PublicLibraryPaths.Add(Path.Combine(ModuleDirectory, "x64", "Release"));
-			PublicAdditionalLibraries.Add("ExampleLibrary.lib");
-
-			// Delay-load the DLL, so we can load it from the right place first
-			PublicDelayLoadDLLs.Add("ExampleLibrary.dll");
-		}
-        else if (Target.Platform == UnrealTargetPlatform.Mac)
-        {
-            PublicDelayLoadDLLs.Add(Path.Combine(ModuleDirectory, "Mac", "Release", "libExampleLibrary.dylib"));
-        }*/
+	
 
         if ((Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32))
         {
@@ -92,12 +78,9 @@ public class SpoutPlugin : ModuleRules
             RuntimeDependencies.Add(new RuntimeDependency(Path.Combine(ThirdPartyPath, "Spout/lib", PlatformString, "Spout.dll")));
             
             // Delay-load the DLL, so we can load it from the right place first
-            //PublicDelayLoadDLLs.Add(Path.Combine(ThirdPartyPath, "Spout/lib", PlatformString, "Spout.dll"));
+            PublicDelayLoadDLLs.Add(Path.Combine(ThirdPartyPath, "Spout/lib", PlatformString, "Spout.dll"));
             
-            /*PublicIncludePaths.AddRange(
-                new string[] {
-					Path.Combine(ThirdPartyPath, "Spout/include")
-				});*/
+            
         }
         
 	}
