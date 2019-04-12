@@ -22,6 +22,8 @@ void FSpoutModule::StartupModule()
 	FString LibraryPath;
 #if PLATFORM_WINDOWS
 	LibraryPath = FPaths::Combine(*BaseDir, TEXT("Binaries/ThirdParty/SpoutUE4Library/Win64/Spout.dll"));
+	//LibraryPath = FPaths::Combine(*BaseDir, TEXT("Plugins/Spout/ThirdParty/Spout/lib/amd64/Spout.dll"));
+
 #elif PLATFORM_MAC
     //LibraryPath = FPaths::Combine(*BaseDir, TEXT("Source/ThirdParty/SpoutUE4Library/Mac/Release/libExampleLibrary.dylib"));
 #endif // PLATFORM_WINDOWS
