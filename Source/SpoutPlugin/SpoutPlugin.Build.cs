@@ -1,10 +1,10 @@
 // Some copyright should be here...
 
-using UnrealBuildTool;
 using System.IO;
 
-
-public class SpoutPlugin : ModuleRules
+namespace UnrealBuildTool.ModuleRules
+{
+    public class SpoutPlugin : ModuleRules
 {
 
     private string ModulePath
@@ -17,58 +17,59 @@ public class SpoutPlugin : ModuleRules
         get { return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty/")); }
     }
     
-	public SpoutPlugin(ReadOnlyTargetRules Target) : base(Target)
-	{
+    public SpoutPlugin(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PrivatePCHHeaderFile = "Private/SpoutPluginPrivatePCH.h";
 
         PublicIncludePaths.AddRange(
             new string[] {
-				"SpoutPlugin/Public",
+                Path.Combine(ModulePath, "Public"),
                 Path.Combine(ThirdPartyPath, "Spout/include")
-				
-				// ... add public include paths required here ...
-			}
+                
+                // ... add public include paths required here ...
+            }
             );
         
 
         PrivateIncludePaths.AddRange(
             new string[] {
-				"SpoutPlugin/Private",
-				// ... add other private include paths required here ...
-			}
+                "SpoutPlugin/Private",
+                // ... add other private include paths required here ...
+            }
             );
 
-		//AddThirdPartyPrivateStaticDependencies(Target, "Spout");
+        //AddThirdPartyPrivateStaticDependencies(Target, "Spout");
 
-		PublicDependencyModuleNames.AddRange(
-			new string[]
-			{
-				"Core",
-				"CoreUObject",
+        PublicDependencyModuleNames.AddRange(
+            new string[]
+            {
+                "Core",
+                "CoreUObject",
                 "Engine",
                 "RHI",
                 "RenderCore"
-				// ... add other public dependencies that you statically link with here ...
-			}
-			);
+                // ... add other public dependencies that you statically link with here ...
+            }
+            );
 
         PrivateDependencyModuleNames.AddRange(
             new string[]
-			{
-				"Slate", "SlateCore"
-				// ... add private dependencies that you statically link with here ...	
-			}
+            {
+                "Slate", "SlateCore"
+                // ... add private dependencies that you statically link with here ...  
+            }
             );
 
 
         DynamicallyLoadedModuleNames.AddRange(
             new string[]
-			{
-				
-				// ... add any modules that your module loads dynamically here ...
-			}
+            {
+                
+                // ... add any modules that your module loads dynamically here ...
+            }
             );
-			
-	
+            
+    
 
         if ((Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32))
         {
@@ -83,5 +84,7 @@ public class SpoutPlugin : ModuleRules
             
         }
         
-	}
+    }
+}
+
 }

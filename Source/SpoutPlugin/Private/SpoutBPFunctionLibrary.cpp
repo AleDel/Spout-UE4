@@ -478,6 +478,7 @@ bool USpoutBPFunctionLibrary::SpoutSender(FName spoutName, ESpoutSendTextureFrom
 		return false;
 	}
 	
+	// TODO needs to be updated to ENQUEUE_UNIQUE_RENDER for 4.22
 	//Sincroniza el thread del render y la copia de la textura
 	ENQUEUE_UNIQUE_RENDER_COMMAND_TWOPARAMETER(
 		void,
