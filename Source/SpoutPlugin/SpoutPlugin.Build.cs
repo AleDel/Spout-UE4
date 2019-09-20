@@ -70,7 +70,7 @@ namespace UnrealBuildTool.Rules
                 );
                 
         
-
+            // This section needs work
             if ((Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32))
             {
                 string PlatformString = (Target.Platform == UnrealTargetPlatform.Win64) ? "amd64" : "x86";
