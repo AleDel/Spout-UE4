@@ -1,13 +1,14 @@
 {
 	"FileVersion": 3,
 	"FriendlyName": "Spout Plugin",
-	"Version": 2,
-	"VersionName": "1.1",
+	"Version": 3,
+	"VersionName": "1.2",
 	"CreatedBy": "ale",
 	"CreatedByURL": "",
 	"Category": "Spout",
-	"Description": "Spout Sender Receiver",
-	"EnabledByDefault": false,
+	"Description": "Enables sending and receiving of textures via Spout framework (http://spout.zeal.co/).",
+	"SupportURL": "https://L05.is",
+	"EnabledByDefault": true,
 	"Modules": [
 		{
 			"Name": "SpoutPlugin",
