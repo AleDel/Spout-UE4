@@ -43,9 +43,3 @@ To make this plugin work in a packaged game you have to disable using 'pak' file
 1. going to File->Package project->Packaging settings
 2. once there uncheck 'Use Pak File' checkbox
 
-# Issues
-If you get missing Spout.dll error when trying to launch the game manually copy Spout.dll from:
-`[gameName]\Plugins\SpoutUE4\ThirdParty\Spout\lib\amd64`
-
-to: 
-`[gameName]\Binaries\Win64`
