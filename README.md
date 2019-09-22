@@ -33,7 +33,7 @@ use **Close Sender** node to close Spouts. The best way is to connect it to **Ev
 * load Spout scene
 * if you encounter compile errors you have to delete and re-insert identical nodes
 
-[ExampleSpout.zip](http://aledel.github.io/Spout-UE4/exampleSpoutUE4/ExampleSpout.zip)
+[ExampleSpout.zip](http://L05.github.io/Spout-UE4/exampleSpoutUE4/ExampleSpout.zip) *(Updated on 9/22/2019)*
 
 ![CaptureSpout2](http://aledel.github.io/Spout-UE4/images/spout2.jpg)
 This image corresponds to the "Spout" scene. 
