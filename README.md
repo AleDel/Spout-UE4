@@ -43,3 +43,4 @@ To make this plugin work in a packaged game you have to disable using 'pak' file
 1. going to File->Package project->Packaging settings
 2. once there uncheck 'Use Pak File' checkbox
 
+This is only necessary if you are using the *Mat* pin on the *Spout Receiver* node.
