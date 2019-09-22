@@ -115,7 +115,7 @@ namespace UnrealBuildTool.Rules
 
                 string pluginDLLPath = Path.Combine(ThirdPartyPath, "Spout", "lib", PlatformString, "Spout.dll");
                 string binariesPath = CopyToProjectBinaries(pluginDLLPath, Target);
-                System.Console.WriteLine("Using Python DLL: " + binariesPath);
+                System.Console.WriteLine("Using Spout DLL: " + binariesPath);
                 RuntimeDependencies.Add(binariesPath);
             }
         }
