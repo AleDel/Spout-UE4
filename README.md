@@ -1,5 +1,15 @@
 *Modification of original plugin by [AleDel](https://github.com/AleDel/Spout-UE4) with UE versions 4.19+.*
 
+# Spout-UE4
+This is a [Spout](http://spout.zeal.co/) Plugin for Unreal Engine. It allows you to send and receive textures using Spout framework.
+
+Sender and Receiver only DirectX 11.
+
+* [Installation and Use](#installation-and-use)
+* [Sending Spout](#sending-spout)
+* [Install Example](#install-example)
+* [Packaged game](#packaged-game)
+
 **This was tested with:**
 * 4.19
 * 4.20
@@ -7,47 +17,55 @@
 * 4.22
 * 4.23
 
-# Spout-UE4
-This is a [Spout](http://spout.zeal.co/) Plugin for Unreal Engine. It allows you to send and receive textures using Spout framework.
-
-Sender and Receiver only DirectX 11.
 
 # Installation and Use
 
 1. Open up Epic Games Launcher (make sure it's up to date).
 
 2. Create a new C++ First person Project.
+
 ![Image 1](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_01.png)
 
 3. You should see it Generating code...
+
 ![Image 2](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_02.png)
 
 4. The Unreal project will open in the editor, and a Visual Studio project will also open.
+
 ![Image 3](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_03.png)
 
 5. Close the Unreal project.
 
 6. In the project directory, create a Plugins folder.
+
 ![Image 4](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_04.png)
 
 7. Download the Spout-UE4 repository (zip file) and put it in the Plugins directory.
+
 ![Image 5](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_05.png)
 
 8. *(Optional)* Download ExampleSpout.zip (from the project GitHub page). Unzip the contents into the Content folder.
+
 ![Image 6](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_06.png)
 
 9. In the project directory, open the .uproject file. Press Yes when asked if you'd like to rebuild the SpoutPlugin module.
+
 ![Image 7](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_07.png)
+
 It will start to build.
+
 ![Image 8](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_08.png)
 
 10. Once the project opens, go to Settings > Plugins.
+
 ![Image 9](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_09.png)
 
 11. Make sure the Spout Plugin is enabled. If necessary, restart.
+
 ![Image 10](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_10.png)
 
 12. *(Optional)* Open the ExampleSpout > Spout project and press Play. Configure the Sender and Receiver names to work with other software.
+
 ![Image 11](https://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_11.png)
 
 For video instructions, please refer to [Unreal Engine 4 and Lightact Video Tutorials](https://www.youtube.com/playlist?list=PLcNPGta1d2XDcSsz8zcW0f2lPSawnW3mR), which provides a good step-by-Image walkthrough of how to set up your project for use with the plugin.
