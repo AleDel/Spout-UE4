@@ -51,7 +51,7 @@ It will start to build.
 12. *(Optional)* Open the ExampleSpout > Spout project and press Play. Configure the Sender and Receiver names to work with other software.
 ![Step 11](http://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_11.png)
 
-For video instructions, please refer to [Unreal Engine 4 and Lightact Video Tutorials](https://www.youtube.com/playlist?list=PLcNPGta1d2XDcSsz8zcW0f2lPSawnW3mR). This video provides a good step-by-step walkthrough of how to set up your project for use with the plugin.
+For video instructions, please refer to [Unreal Engine 4 and Lightact Video Tutorials](https://www.youtube.com/playlist?list=PLcNPGta1d2XDcSsz8zcW0f2lPSawnW3mR), which provides a good step-by-step walkthrough of how to set up your project for use with the plugin.
 
 ## Sending Spout
 
