@@ -38,7 +38,6 @@ Sender and Receiver only DirectX 11.
 
 9. In the project directory, open the .uproject file. Press Yes when asked if you'd like to rebuild the SpoutPlugin module.
 ![Image 7](http://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_07.png)
-
 It will start to build.
 ![Image 8](http://L05.github.io/Spout-UE4/images/SpoutExample_Instructions_08.png)
 
